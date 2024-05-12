@@ -1,0 +1,32 @@
+
+{% extends "base.html" %}
+
+{% block title %} Login {% endblock %}
+
+{% block content %}
+
+<div>
+    <h1>Login</h1>
+
+    <form action="{{ url_for('login')}}" method="POST">
+      <div class="mb-3">
+        <label for="email" class="form-label">Email address</label>
+        <input name = "email" type="email" class="form-control" id="email" placeholder="name@example.com">
+      </div>
+      
+      <label for="password" class="form-label">Password</label>
+      <input name = "password"  type="password" id="password" class="form-control" aria-describedby="passwordHelpBlock" placeholder="Password">
+      <div id="passwordHelpBlock" class="form-text">
+        Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji.
+      </div>
+      <br>
+  
+      <p style = "color:grey;display: block; float: right">Haven't created a account. <a href="{{ url_for('signup') }}">Register</a></p>
+  
+      <button class="btn btn-primary" type="submit" >Login</button>
+    </form>
+
+</div>
+
+
+{% endblock %}

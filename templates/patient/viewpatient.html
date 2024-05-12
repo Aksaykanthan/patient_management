@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %} Patients {% endblock %}
+
+{% block content %}
+
+<h1>Patients</h1>
+
+
+    <form class="d-flex" role="search" action="" method="POST">
+        <input class="form-control me-2" type="search" placeholder="Search Patient" aria-label="Search" name="searched">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+    </form>
+    <br>
+
+    <div style="display:block;float:right;">
+        <a class="btn btn-primary" href = "{{ url_for('addpatient') }}">Add Patient</a>
+    </div>
+
+    <br>
+    <br>
+
+    {% if patients %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Patient ID</th>
+                    <th>Patient Name</th>
+                    <th>Patient DOB</th>
+                    <th>View</th>
+                    <th>Edit</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for patient in patients %}
+                    <tr>
+                        <td>{{ patient.name }}</td>
+                        <td>{{ patient.dob }}</td>
+                        <td><a href="">view</a></td> 
+                        <td><a href="">edit</a></td> 
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {%else%}
+        <h1>No Patients Found</h1>
+    {% endif %}
+
+
+
+
+{% endblock %}
