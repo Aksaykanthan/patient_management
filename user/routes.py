@@ -26,7 +26,6 @@ def login():
             return render_template("auth/login.html",msg = res)
     
     return render_template("auth/login.html")
-    # return User().login()
 
 
 @app.route("/user/signup",methods=["POST","GET"])

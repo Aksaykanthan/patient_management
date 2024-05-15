@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %} Hospital Details {% endblock %}
+{% block content %}
+
+
+<div class="container row">
+    <div class="col">
+        <h2>Hospital Details</h2>
+    </div>
+    <div class="col">
+        {% if session.logged_in %}
+            <a class="btn btn-primary" href=""
+                style="display: block; float: right">Edit</a>
+        {% endif %}
+
+    </div>
+</div>
+
+<table class="table">
+    <tbody>
+        <tr>
+            <th scope="row">Name</th>
+            <td>{{hospital.name}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Email</th>
+            <td>{{hospital.email}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Phone Number</th>
+            <td>{{hospital.phoneno}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Location</th>
+            <td>{{hospital.location}}</td>
+        </tr>
+    </tbody>
+</table>
+
+<br><br>
+
+<div class="container" style="border: 20px;border-radius : 20px;m">
+    <div class="container row">
+        <div class="col">
+            <h2>Doctors</h2>
+        </div>
+
+
+        <div class="col">
+        {% if session.logged_in %}
+            <a class="btn btn-primary" href="{{ url_for('addpatient') }}"
+                style="display: block; float: right">Add Doctors</a>
+        {% endif %}
+        </div>
+    </div>
+    
+    {% if doctors %}
+        <table class="table">
+            <tbody>
+                {% for doctor in doctors %}
+                <tr>
+                    <th scope="row">Name</th>
+                    <td>{{doctor}}</td>
+                </tr>
+                {%endfor%}
+            </tbody>
+        </table>
+    {%else%}
+        <br>
+        <h4>No Doctors Found</h4>
+    {% endif %}
+
+
+
+</div>
+
+
+
+{% endblock %}
+
+

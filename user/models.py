@@ -17,7 +17,6 @@ class User:
         session['user'] = user
         return jsonify(user),200
     
-    
     def signup(self):
         user = {
             '_id':uuid.uuid4().hex,
@@ -26,15 +25,14 @@ class User:
             "password":f"{self.password}"
         }
         user["password"] = pbkdf2_sha256.encrypt(user['password'])
-        
-        if db.doctors.find_one({'email': user['email']}):
+
+        if db.users.find_one({'email': user['email']}):
             return jsonify({"des":"Email Address Already Registered","type":"danger"}),400
-        
-        if db.doctors.insert_one(user):
+
+        if db.users.insert_one(user):
             return jsonify({"des": "User Has Been Registered Successfully","type":"success"}),200
         
         return jsonify({"des":"Registration failed","type":"danger"}),400
-        
     
     def signin(self):
         user = {
@@ -42,7 +40,7 @@ class User:
             "password":f"{self.password}"
         }
         
-        user = db.doctors.find_one({'email':user['email']})
+        user = db.users.find_one({'email':user['email']})
         
         if user:
             if pbkdf2_sha256.verify(self.password,user['password']):

@@ -1,0 +1,68 @@
+{% extends 'base.html' %} 
+
+{% block title %} Patient {{patient.name}}{% endblock%}
+
+{% block content %}
+
+<div class="container row">
+    <div class="col">
+        <h2>Patient Details</h2>
+    </div>
+    <div class="col">
+        {% if session.logged_in %}
+            <a class="btn btn-primary" href=""
+                style="display: block; float: right">Edit</a>
+        {% endif %}
+
+    </div>
+</div>
+
+<table class="table">
+    <tbody>
+        <tr>
+            <th scope="row">Name</th>
+            <td>{{patient.name}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Email</th>
+            <td>{{patient.email}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Gender</th>
+            <td>{{patient.gender}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Phone Number</th>
+            <td>{{patient.phoneno}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Blood Group</th>
+            <td>{{patient.bloodgroup}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Address</th>
+            <td>{{patient.address}}</td>
+        </tr>
+        <tr>
+            <th scope="row">DOB</th>
+            <td>{{patient.dob}}</td>
+        </tr>
+    </tbody>
+</table>
+<br><br>
+<div class="container" style="border: 20px;border-radius : 20px;m">
+    <div class="container row">
+        <div class="col">
+            <h2>Records</h2>
+        </div>
+        <div class="col">
+        {% if session.logged_in %}
+            <a class="btn btn-primary" href="{{ url_for('addpatient') }}"
+                style="display: block; float: right">Add Records</a>
+        {% endif %}
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

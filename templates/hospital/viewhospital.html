@@ -1,48 +1,50 @@
 {% extends "base.html" %}
-{% block title %} Patients {% endblock %}
-
+{% block title %} Hospitals {% endblock %}
 {% block content %}
 
-<h1>Patients</h1>
+
+<h1>Hospitals</h1>
 
 
     <form class="d-flex" role="search" action="" method="POST">
-        <input class="form-control me-2" type="search" placeholder="Search Patient" aria-label="Search" name="searched">
+        <input class="form-control me-2" type="search" placeholder="Search Hospital" aria-label="Search" name="searched">
         <button class="btn btn-outline-success" type="submit">Search</button>
     </form>
     <br>
 
     <div style="display:block;float:right;">
-        <a class="btn btn-primary" href = "{{ url_for('addpatient') }}">Add Patient</a>
+        <a class="btn btn-primary" href = "{{ url_for('addhospital') }}">Add hospital</a>
     </div>
 
     <br>
     <br>
 
-    {% if patients %}
+    {% if hospitals %}
         <table class="table">
             <thead>
                 <tr>
-                    <th>Patient Name</th>
-                    <th>Patient DOB</th>
+                    <th>Hospital Name</th>
+                    <th>No of Doctors</th>
                     <th>View</th>
                     <th>Edit</th>
                 </tr>
             </thead>
             <tbody>
-                {% for patient in patients %}
+                {% for hospital in hospitals %}
                     <tr>
-                        <td>{{ patient.name }}</td>
-                        <td>{{ patient.dob }}</td>
-                        <td><a href="{{url_for('detailpatient', _id = patient._id )}}">view</a></td> 
+                        <td>{{ hospital.name }}</td>
+                        <td>{{ hospital.doctors|length }}</td>
+                        <td><a href="{{url_for('detailhospital', _id = hospital._id)}}">view</a></td> 
                         <td><a href="">edit</a></td> 
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     {%else%}
-        <h1>No Patients Found</h1>
+        <h1>No Hospitals Found</h1>
     {% endif %}
+
+
 
 
 
