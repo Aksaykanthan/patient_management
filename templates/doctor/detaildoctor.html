@@ -1,0 +1,72 @@
+{% extends 'base.html' %} 
+
+{% block title %} Doctor {{doctor.name}}{% endblock%}
+
+{% block content %}
+
+<div class="container row">
+    <div class="col">
+        <h2>Doctor Details</h2>
+    </div>
+    <div class="col">
+        {% if session.logged_in %}
+            <a class="btn btn-primary" href=""
+                style="display: block; float: right">Edit</a>
+        {% endif %}
+
+    </div>
+</div>
+
+<table class="table">
+    <tbody>
+        <tr>
+            <th scope="row">Name</th>
+            <td>{{doctor.name}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Email</th>
+            <td>{{doctor.email}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Gender</th>
+            <td>{{doctor.gender}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Phone Number</th>
+            <td>{{doctor.phoneno}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Specialization</th>
+            <td>{{doctor.specialization}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Degree</th>
+            <td>{{doctor.degree}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Experience </th>
+            <td>{{doctor.graduation}}</td>
+        </tr>
+        <tr>
+            <th scope="row">DOB </th>
+            <td>{{doctor.dob}}</td>
+        </tr>
+    </tbody>
+</table>
+<br><br>
+<div class="container" style="border: 20px;border-radius : 20px;m">
+    <div class="container row">
+        <div class="col">
+            <h2>Reviews</h2>
+        </div>
+        <div class="col">
+        {% if session.logged_in %}
+            <a class="btn btn-primary" href="{{ url_for('adddoctor') }}"
+                style="display: block; float: right">Add Records</a>
+        {% endif %}
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

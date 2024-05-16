@@ -19,11 +19,11 @@ def login():
         email = request.form.get("email")
         password = request.form.get("password")
         
-        res,error = User(**{"name":"","email":email,"password":password}).signin()
-        if error == 200:
+        res,err = User(**{"name":"","email":email,"password":password}).signin()
+        if err == 200:
             return redirect(url_for("dashboard"))
         else:
-            return render_template("auth/login.html",msg = res)
+            return redirect(url_for("login",msg = res.json.get("des"),_type=err))
     
     return render_template("auth/login.html")
 
@@ -35,13 +35,13 @@ def signup():
         email = request.form.get("email")
         password = request.form.get("password")
         
-        res,error = User(**{'name':name,"email":email,"password":password}).signup()
-        if error == 200:
-            return render_template("auth/login.html",msg = res)
-            # return redirect(url_for("login",msg = res))
+        res,err = User(**{'name':name,"email":email,"password":password}).signup()
+        if err == 200:
+            return redirect(url_for("login",msg = res.json.get("des"),_type=err))
+            # return redirect(url_for("login",msg = res.json))
         else:
-            return render_template("auth/register.html",msg = res)
-            # return redirect(url_for("signup",msg = res))
+            return redirect(url_for("register",msg = res.json.get("des"),_type=err))
+            # return redirect(url_for("signup",msg = res.json))
     
     return render_template("auth/register.html")
 

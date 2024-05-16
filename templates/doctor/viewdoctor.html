@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %} Doctors {% endblock %}
+{% block content %}
+
+
+<h1>Doctors</h1>
+
+
+    <form class="d-flex" role="search" action="" method="POST">
+        <input class="form-control me-2" type="search" placeholder="Search Doctor" aria-label="Search" name="searched">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+    </form>
+    <br>
+
+    <div style="display:block;float:right;">
+        <a class="btn btn-primary" href = "{{ url_for('adddoctor') }}">Add hospital</a>
+    </div>
+
+    <br>
+    <br>
+
+    {% if doctors %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Doctor Name</th>
+                    <th>Specialization</th>
+                    <th>View</th>
+                    <th>Edit</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for doctor in doctors %}
+                    <tr>
+                        <td>{{ doctor.name }}</td>
+                        <td>{{ doctor.specialization }}</td>
+                        <td><a href="{{url_for('detaildoctor', _id = doctor._id)}}">view</a></td> 
+                        <td><a href="">edit</a></td> 
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {%else%}
+        <h1>No doctors Found</h1>
+    {% endif %}
+
+
+
+
+
+{% endblock %}
