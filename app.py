@@ -14,6 +14,8 @@ from user import routes
 def home():
     return render_template("home.html")
 
+# --------- PATIENT ROUTES ------------
+
 @app.route('/patient')
 @routes.login_required
 def patient():
@@ -37,7 +39,7 @@ def detailpatient():
     _id = request.args.get("_id")
     return render_template("patient/detailpatient.html",patient = Patient.get_patient(_id))
 
-# --------- hOSPITAL ROUTES ------------
+# --------- HOSPITAL ROUTES ------------
 
 @app.route("/hospital")
 def hospital():
