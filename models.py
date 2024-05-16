@@ -91,3 +91,45 @@ class Hospital:
     @staticmethod
     def get_hospital(_id):
         return db.hospitals.find_one({"_id":_id})
+
+class Doctor(User):
+    def __init__(self,name:str,email:str,gender:str,phonenumber:str,dob, graduation,degree:str,specialization:str,hospital:str,password:str=None):
+        super().__init__(name,password,email,gender,phonenumber)
+        self.dob = dob
+        self.graduation = graduation
+        self.degree = degree
+        self.specialization = specialization
+        self.reviews = []
+        self.ratings = 0
+        self.hospital = hospital
+    
+    def create_doctor(self,_id):
+        doctor = {
+            "_id" : _id,
+            "name": self.name,
+            "password":self.password,
+            "email":self.email,
+            "gender":self.gender,
+            "phoneno":self.phoneno,
+            "dob":self.dob,
+            "specialization" : self.specialization,
+            "graduation":self.graduation,
+            "degree":self.degree,
+            "reviews":self.reviews
+            }
+        
+        if db.doctors.find_one({'_id': doctor['_id']}):
+            return jsonify({"des":"Doctor Already exists","type":"danger"}),400
+
+        if db.doctors.insert_one(doctor):
+            return jsonify({"des": "Doctor Has Been Registered Successfully","type":"success","id":doctor['_id']}),200
+        
+        return jsonify({"des":"Registration failed","type":"danger"}),400
+    
+    @staticmethod
+    def view_doctors():
+        return list(db.doctors.find({}))
+
+    @staticmethod
+    def get_doctor(_id):
+        return db.doctors.find_one({"_id":_id})

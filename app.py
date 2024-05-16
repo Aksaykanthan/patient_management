@@ -1,4 +1,4 @@
-from flask import Flask,request,render_template,redirect,url_for
+from flask import Flask,request,render_template,redirect, session,url_for,flash
 import pymongo
 
 app = Flask(__name__)
@@ -7,7 +7,7 @@ app.secret_key = "medilink"
 client = pymongo.MongoClient("localhost",27017,uuidRepresentation='standard')
 db = client.Medilink
 
-from models import Patient,Hospital
+from models import Doctor, Patient,Hospital
 from user import routes
 
 @app.route("/")
@@ -26,9 +26,9 @@ def addpatient():
         res,err = Patient(**request.form).create_patient()
         # print(res.json.id)
         if err == 200:
-            return redirect(url_for("detailpatient",_id = res.json.id))
+            return redirect(url_for("detailpatient",_id = res.json.get("id"),msg = res.json.get("des"),_type=err))
         
-        return redirect(url_for("addpatient",msg = res))
+        return redirect(url_for("addpatient",msg = res.json.get("des"),_type=err))
 
     return render_template("patient/addpatient.html")
 
@@ -41,7 +41,6 @@ def detailpatient():
 
 @app.route("/hospital")
 def hospital():
-    
     return render_template("hospital/viewhospital.html", hospitals = Hospital.view_hospitals())
 
 @app.route("/hospital/add",methods = ["GET","POST"])
@@ -49,9 +48,10 @@ def addhospital():
     if request.method == "POST":
         res,err = Hospital(**request.form).create_hospital()
         if err == 200:
-            return redirect(url_for("detailhospital",_id = res.json.id,msg = res))
+            # flash(res.json.get("des"),res.json.get("type"))
+            return redirect(url_for("detailhospital",_id = res.json.get("id"),msg = res.json.get("des"),_type=err))
         
-        return redirect(url_for("addhospital",msg = res))
+        return redirect(url_for("addhospital",msg = res.json.get("des"),_type=err))
     
     return render_template("hospital/addhospital.html")
 
@@ -68,15 +68,27 @@ def detailhospital():
 
 @app.route("/doctor")
 def doctor():
-    return render_template("doctor.html")
+    return render_template("doctor/viewdoctor.html", doctors = Doctor.view_doctors())
 
-@app.route("/doctor/add")
+@app.route("/doctor/add",methods = ["GET","POST"])
 def adddoctor():
-    return render_template("adddoctor.html")
+    if request.method == "POST":
+        _id = session.get("user").get("_id")
+        name = session.get("user").get("name")
+        email = session.get("user").get("email")
+        res,err = Doctor(name=name,email=email,**request.form).create_doctor(_id)
+        if err == 200:
+            return redirect(url_for("detaildoctor",_id = res.json.get("id"),msg = res.json.get("des"),_type=err,hospitals = Hospital.view_hospitals()))
+        
+        return redirect(url_for("adddoctor",msg = res.json.get("des"),_type=err,hospitals = Hospital.view_hospitals()))
+    
+    return render_template("doctor/adddoctor.html",hospitals = Hospital.view_hospitals())
 
 @app.route("/doctor/detail")
 def detaildoctor():
-    return render_template("detaildoctor.html")
+    _id = request.args.get("_id")
+    doctor = Doctor.get_doctor(_id)
+    return render_template("doctor/detaildoctor.html",doctor=doctor)
 
 
 # ---------- MEDICINE ROUTES ------------
