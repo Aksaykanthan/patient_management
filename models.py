@@ -76,7 +76,7 @@ class Hospital:
             return jsonify({"des": "Hospital Has Been Registered Successfully","type":"success","id":hospital['_id']}),200
 
         return jsonify({"des":"Registration failed","type":"danger"}),400
-    
+
     @staticmethod
     def add_doctor(doctor_id,hospital_id):
         hospital = db.hospitals.find_one({"_id":hospital_id})
@@ -126,6 +126,7 @@ class Doctor(User):
         
         return jsonify({"des":"Registration failed","type":"danger"}),400
     
+    
     @staticmethod
     def view_doctors():
         return list(db.doctors.find({}))
@@ -133,3 +134,4 @@ class Doctor(User):
     @staticmethod
     def get_doctor(_id):
         return db.doctors.find_one({"_id":_id})
+    

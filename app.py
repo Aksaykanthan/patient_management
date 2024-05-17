@@ -94,6 +94,7 @@ def detaildoctor():
 
 
 # ---------- MEDICINE ROUTES ------------
+
 @app.route("/medicine")
 def medicine():
     return render_template("medicine.html")
