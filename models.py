@@ -1,6 +1,7 @@
-from flask import jsonify
+from flask import jsonify, session
 import uuid
 from app import db
+import datetime
 
 class User:
     def __init__(self,name:str,password:str,email:str,gender:str,phoneno:str) -> None:
@@ -19,6 +20,7 @@ class Patient(User):
         self.dob = dob
         self.address = address
         self.bloodgroup = bloodgroup
+        self.session = []
     
     def create_patient(self):
         patient = {
@@ -48,7 +50,6 @@ class Patient(User):
     @staticmethod
     def get_patient(_id):
         return db.patients.find_one({"_id":_id})
-
 
 
 class Hospital:
@@ -133,3 +134,58 @@ class Doctor(User):
     @staticmethod
     def get_doctor(_id):
         return db.doctors.find_one({"_id":_id})
+    
+class Medicine:
+    def __init__(self,name:str,description:str,note:str=None):
+        self.name = name
+        self.description = description
+        self.note = note
+    
+    def create_medicine(self):
+        medicine = {
+            "_id" : uuid.uuid4().hex,
+            "name": self.name,
+            "description":self.description,
+            "note": self.note
+            }
+        
+        if db.medicines.find_one({'name': medicine['name']}):
+            return jsonify({"des":"Medicine Already exists","type":"danger"}),400
+
+        if db.medicines.insert_one(medicine):
+            return jsonify({"des": "Medicine Has Been Registered Successfully","type":"success","id":medicine['_id']}),200
+        
+        return jsonify({"des":"Registration failed","type":"danger"}),400
+
+    @staticmethod
+    def view_medicines():
+        return list(db.medicines.find({}))
+
+    @staticmethod
+    def get_medicine(_id):
+        return db.medicines.find_one({"_id":_id})
+
+class Session:
+    def __init__(self,subject:str,details:str,prescription:object,duration:str,times:list,followup:str=None):
+        self.subject = subject
+        self.details = details
+        self.prescription = prescription
+        self.duration = duration
+        self.times = times
+        self.followup = followup
+        curr = datetime.datetime.now()
+        self.time = curr.strftime("%X")
+        self.date = curr.strftime("%x")
+
+    def create_session(self):
+        session = {
+            "subject":self.subject,
+            "details":self.details,
+            "medicines":self.medicines,
+            "duration":self.duration,
+            "times":self.times,
+            "followup":self.followup,
+            "time":self.time,
+            "date":self.date
+            }
+    

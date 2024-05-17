@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %} Add Medicine {% endblock %}
+{% block content %}
+
+<div class="container row">
+    <div class="col">
+        <h2>Medicine Details</h2>
+    </div>
+    <div class="col">
+        {% if session.logged_in %}
+            <a class="btn btn-primary" href=""
+                style="display: block; float: right">Edit</a>
+        {% endif %}
+
+    </div>
+</div>
+
+<table class="table">
+    <tbody>
+        <tr>
+            <th scope="row">Medicine Name</th>
+            <td>{{medicine.name}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Description</th>
+            <td>{{medicine.description}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Note</th>
+            <td>{{medicine.note}}</td>
+        </tr>
+    </tbody>
+</table>
+
+<br><br>
+
+{% endblock %}
