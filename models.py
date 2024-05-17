@@ -1,6 +1,7 @@
-from flask import jsonify
+from flask import jsonify, session
 import uuid
 from app import db
+import datetime
 
 class User:
     def __init__(self,name:str,password:str,email:str,gender:str,phoneno:str) -> None:
@@ -19,6 +20,7 @@ class Patient(User):
         self.dob = dob
         self.address = address
         self.bloodgroup = bloodgroup
+        self.session = []
     
     def create_patient(self):
         patient = {
@@ -48,7 +50,6 @@ class Patient(User):
     @staticmethod
     def get_patient(_id):
         return db.patients.find_one({"_id":_id})
-
 
 
 class Hospital:
@@ -134,4 +135,3 @@ class Doctor(User):
     @staticmethod
     def get_doctor(_id):
         return db.doctors.find_one({"_id":_id})
-    

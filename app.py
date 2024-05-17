@@ -1,5 +1,6 @@
-from flask import Flask,request,render_template,redirect, session,url_for,flash
+from flask import Flask,request,render_template,redirect, session,url_for
 import pymongo
+
 
 app = Flask(__name__)
 app.secret_key = "medilink"
@@ -7,7 +8,7 @@ app.secret_key = "medilink"
 client = pymongo.MongoClient("localhost",27017,uuidRepresentation='standard')
 db = client.Medilink
 
-from models import Doctor, Patient,Hospital
+from models import Doctor, Patient,Hospital ,Medicine
 from user import routes
 
 @app.route("/")
@@ -97,13 +98,22 @@ def detaildoctor():
 
 @app.route("/medicine")
 def medicine():
-    return render_template("medicine.html")
+    return render_template("medicine/viewmedicine.html", medicines = Medicine.view_medicines())
 
-@app.route("/medicine/add")
+@app.route("/medicine/add",methods = ["GET","POST"])
 def addmedicine():
-    return render_template("addmedicine.html")
+    if request.method == "POST":
+        res,err = Medicine(**request.form).create_medicine()
+        if err == 200:
+            return redirect(url_for("detailmedicine",_id = res.json.get("id"),msg = res.json.get("des"),_type=err))
+        
+        return redirect(url_for("addmedicine",msg = res.json.get("des"),_type=err))
+    
+    return render_template("medicine/addmedicine.html")
 
 @app.route("/medicine/detail")
 def detailmedicine():
-    return render_template("detailmedicine.html")
+    _id = request.args.get("_id")
+    medicine = Medicine.get_medicine(_id)
+    return render_template("medicine/detailmedicine.html",medicine=medicine)
 

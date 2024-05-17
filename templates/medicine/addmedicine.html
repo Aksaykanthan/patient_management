@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %} Add Medicine {% endblock %}
+{% block content %}
+
+<h1>Add Medicine</h1>
+
+<form action="" method="POST">
+    <div class="mb-3">
+        <label for="name" class="form-label">Medicine Name</label>
+        <input type="text" class="form-control" id="name" name="name" required>
+    </div>
+    <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <input type="text" class="form-control" id="description" name="description" required>
+    </div>
+    <div class="mb-3">
+        <label for="note" class="form-label">Note</label>
+        <input type="text" class="form-control" id="note" name="note" >
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+    
+</form>
+{% endblock %}
