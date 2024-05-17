@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %} Specialization {% endblock %}
+{% block content %}
+
+
+<h1>Specialization</h1>
+
+
+    <div style="display:block;float:right;">
+        <a class="btn btn-primary" href = "{{ url_for('addspecialization') }}">Add Specialization</a>
+    </div>
+
+    <br>
+    <br>
+
+    {% if specializations %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Specialization</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for specialization in specializations %}
+                    <tr>
+                        <td>{{ specialization.name }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {%else%}
+        <h5>No Specialization Found</h5>
+    {% endif %}
+
+
+
+
+
+{% endblock %}
+

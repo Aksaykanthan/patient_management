@@ -11,11 +11,13 @@
         <button class="btn btn-outline-success" type="submit">Search</button>
     </form>
     <br>
-
-    <div style="display:block;float:right;">
-        <a class="btn btn-primary" href = "{{ url_for('addhospital') }}">Add hospital</a>
-    </div>
-
+    {% if session.logged_in %}
+        {% if session.user.is_superuser %}
+            <div style="display:block;float:right;">
+                <a class="btn btn-primary" href = "{{ url_for('addhospital') }}">Add hospital</a>
+            </div>
+        {% endif %}
+    {% endif %}
     <br>
     <br>
 

@@ -57,11 +57,24 @@
         </div>
         <div class="col">
         {% if session.logged_in %}
-            <a class="btn btn-primary" href="{{ url_for('addpatient') }}"
-                style="display: block; float: right">Add Records</a>
+            <a class="btn btn-primary" href="{{ url_for('addsession' , _id = patient._id  ) }}"
+                style="display: block; float: right;">Add Records</a>
         {% endif %}
         </div>
     </div>
+    <br>
+    {% for record in patient.session %}
+        <div class="card">
+            <h5 class="card-header ">{{record.subject}}</h5>
+            <div class="card-body" style = "padding-top:10px;">
+                <p style = "color: grey; font-size:small; padding-left:16px; margin:5px; display: block; float: right;">{{record.date}} - {{record.time}}</p>
+                <h6 class="card-title"><a href = "{{url_for('detaildoctor' ,_id = record.doctor)}}" style = "text-decoration: none;">{{get_doctorname(record.doctor)}} </a> - <a style = "text-decoration: none;" href = "{{url_for('detailhospital', _id = record.hospital)}}">{{get_hospitalname(record.hospital)}}</a></h6>
+                <hr>
+                <p class="card-text">{{record.details}}</p>
+            </div>
+        </div>
+        <br>
+    {% endfor %}
 
 </div>
 

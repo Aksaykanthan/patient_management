@@ -1,3 +1,4 @@
+from cgitb import reset
 from flask import Flask,request,render_template,redirect, session,url_for
 import pymongo
 
@@ -8,7 +9,7 @@ app.secret_key = "medilink"
 client = pymongo.MongoClient("localhost",27017,uuidRepresentation='standard')
 db = client.Medilink
 
-from models import Doctor, Patient,Hospital ,Medicine
+from models import Doctor, Patient, Hospital, Medicine, Session, Specialization
 from user import routes
 
 @app.route("/")
@@ -39,6 +40,20 @@ def addpatient():
 def detailpatient():
     _id = request.args.get("_id")
     return render_template("patient/detailpatient.html",patient = Patient.get_patient(_id))
+
+@app.route("/patient/verify",methods = ["GET","POST"])
+def verifypatient():
+    if request.method == "POST":
+        name = request.form.get("name")
+        email = request.form.get("email")
+        res,err = Patient.verify_patient(email,name)
+        if err == 200:
+            return redirect(url_for("detailpatient",_id = res.json.get("_id")))
+        
+        return redirect(url_for("verifypatient",msg = res.json.get("des"),_type=err))
+    
+    return render_template("patient/verifypatient.html")
+
 
 # --------- HOSPITAL ROUTES ------------
 
@@ -93,6 +108,18 @@ def detaildoctor():
     doctor = Doctor.get_doctor(_id)
     return render_template("doctor/detaildoctor.html",doctor=doctor)
 
+@app.route("/doctor/review",methods = ["GET","POST"])
+def addreview():
+    if request.method == "POST":
+        _id = request.args.get("_id")
+        name = request.form.get("name")
+        review = request.form.get("review")
+        Doctor.add_review(_id,{"name":name,"review":review})
+        
+        return redirect(url_for("detaildoctor",_id = _id))
+
+    return render_template("doctor/review.html")
+
 
 # ---------- MEDICINE ROUTES ------------
 
@@ -117,3 +144,46 @@ def detailmedicine():
     medicine = Medicine.get_medicine(_id)
     return render_template("medicine/detailmedicine.html",medicine=medicine)
 
+# ---------- SESSION ROUTES ------------
+@app.route("/addsession",methods = ["GET","POST"])
+def addsession():
+    if request.method == "POST":
+        patient_id = request.args.get("_id")
+        doctor_id = session.get("user").get("_id")
+        res,err = Session(**request.form).create_session(patient_id,doctor_id)
+        if err == 200:
+            return redirect(url_for("detailpatient",_id = patient_id,msg = res.json.get("des"),_type=err))
+
+    return render_template("session/addsession.html")
+
+# --------- SPECIALIZATION ROUTES ------------
+@app.route("/specialization")
+def specialization():
+    return render_template("specialization/viewspecialization.html",specializations = list(db.specializations.find({})))
+
+
+@app.route("/specialization/add",methods = ["GET","POST"])
+def addspecialization():
+    if request.method == "POST":
+        res,err = Specialization(request.form.get("specialization")).create_specialization()
+        return redirect(url_for("specialization",msg = res.json.get("des"),_type=err))
+    
+    return render_template("specialization/addspecialization.html")
+
+
+
+# ------------- JINJA FILTERS ------------
+@app.context_processor
+def utility_processor():
+    def get_doctorname(_id):
+        return Doctor.get_doctorname(_id)
+    def get_hospitalname(_id):
+        return Hospital.get_hospitalname(_id)
+    def get_hospital(_id):
+        return Hospital.get_hospital(_id)
+    def get_doctor(_id):
+        return Doctor.get_doctor(_id)
+    def get_allspecialization():
+        return Specialization.view_specializations()
+    
+    return dict(get_doctorname=get_doctorname,get_hospitalname=get_hospitalname,get_hospital=get_hospital,get_doctor=get_doctor,get_allspecialization=get_allspecialization)

@@ -14,10 +14,26 @@
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="{{url_for('patient')}}">Patients</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{{url_for('hospital')}}">Hospitals</a>
-                    </li>
+                    {% if session.user.is_superuser %}
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="{{url_for('specialization')}}">Specialization</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="{{url_for('medicine')}}">Medicine</a>
+                        </li>
+                    {% endif %}
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{{url_for('verifypatient')}}">Patient</a>
+                </li>
                 {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{{url_for('doctor')}}">Doctors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{{url_for('hospital')}}">Hospitals</a>
+                </li>
+
             </ul>
 
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">

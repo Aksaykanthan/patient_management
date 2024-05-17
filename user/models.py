@@ -39,7 +39,6 @@ class User:
             'email':f"{self.email}",
             "password":f"{self.password}"
         }
-        
         user = db.users.find_one({'email':user['email']})
         
         if user:
@@ -47,9 +46,11 @@ class User:
                 return self.start_session(user)
             else:
                 return jsonify({"des":"Password is incorrect","type":"danger"}),400
+                
         else:
             return jsonify({"des":"User not found","type":"danger"}),400
     
     @staticmethod
     def signout():
         session.clear()
+

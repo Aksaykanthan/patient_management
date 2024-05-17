@@ -1,6 +1,6 @@
 from functools import wraps
 from flask import Flask,render_template,request,redirect,url_for,session
-from app import app
+from app import app,db
 from user.models import User
 
 
@@ -13,6 +13,7 @@ def login_required(f):
             return redirect(url_for("home"))
     return wrap
 
+
 @app.route("/user/login",methods=["GET","POST"])
 def login():
     if request.method == "POST":
@@ -20,8 +21,11 @@ def login():
         password = request.form.get("password")
         
         res,err = User(**{"name":"","email":email,"password":password}).signin()
+        print(res.json.get("_id"))
         if err == 200:
-            return redirect(url_for("dashboard"))
+            if db.doctors.find_one({'_id': res.json.get("_id")}):
+                return redirect(url_for("dashboard"))
+            return redirect(url_for("adddoctor"))
         else:
             return redirect(url_for("login",msg = res.json.get("des"),_type=err))
     
@@ -39,8 +43,7 @@ def signup():
         if err == 200:
             return redirect(url_for("login",msg = res.json.get("des"),_type=err))
             # return redirect(url_for("login",msg = res.json))
-        else:
-            return redirect(url_for("register",msg = res.json.get("des"),_type=err))
+        return redirect(url_for("signup",msg = res.json.get("des"),_type=err))
             # return redirect(url_for("signup",msg = res.json))
     
     return render_template("auth/register.html")

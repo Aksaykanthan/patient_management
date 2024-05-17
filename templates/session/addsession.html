@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %} Add Session {% endblock %}
+{% block content %}
+
+<h1>Add Session</h1>
+<form method="POST">
+    <div class="mb-3">
+        <label for="subject" class="form-label">Subject</label>
+        <input type="text" class="form-control" id="subject" name="subject" required>
+    </div>
+    <div class="mb-3">
+        <label for="followup" class="form-label">Next Visit</label>
+        <input type="text" class="form-control" id="followup" name="followup" value="Not Required">
+    </div>
+    <div class="mb-3">
+        <label for="details" class="form-label">Details</label>
+        <textarea type="text" class="form-control" id="details" name="details" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+{% endblock %}

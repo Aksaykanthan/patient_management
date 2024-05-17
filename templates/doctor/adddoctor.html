@@ -45,14 +45,19 @@
     </div>
     <div class="mb-3">
         <label for="specialization" class="form-label">Specialization</label>
-        <input type="text" class="form-control" id="specialization" name="specialization" required>
+        <select class="form-select" id="specialization" name = "specialization" required>
+            <option selected>Choose...</option>
+            {% for specialization in get_allspecialization() %}
+                    <option value="{{specialization.name}}">{{ specialization.name }}</option>
+            {% endfor %}
+        </select>
     </div>
     <div class="mb-3">
         <label for="hospital" class="form-label">Hospital</label>
             <select class="form-select" id="hospital" name = "hospital" required>
                 <option selected>Choose...</option>
                 {% for hospital in hospitals %}
-                        <option value=hospital._id>{{ hospital.name }}</option>
+                        <option value="{{hospital._id}}">{{ hospital.name }}</option>
                 {% endfor %}
         </select>
     </div>

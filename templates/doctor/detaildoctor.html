@@ -9,10 +9,10 @@
         <h2>Doctor Details</h2>
     </div>
     <div class="col">
-        {% if session.logged_in %}
+    {% if session.user.is_superuser %}
             <a class="btn btn-primary" href=""
                 style="display: block; float: right">Edit</a>
-        {% endif %}
+    {% endif %}
 
     </div>
 </div>
@@ -60,13 +60,29 @@
             <h2>Reviews</h2>
         </div>
         <div class="col">
-        {% if session.logged_in %}
-            <a class="btn btn-primary" href="{{ url_for('adddoctor') }}"
-                style="display: block; float: right">Add Records</a>
-        {% endif %}
+            <a class="btn btn-primary" href="{{url_for('addreview', _id = doctor._id) }}"
+                style="display: block; float: right;">Add Reviews</a>
         </div>
     </div>
+    <br>
+    {% if doctor.reviews %}
+        {% for review in doctor.reviews %}
+            <div class="card">
+                <h5 class="card-header ">{{review.name}}</h5>
+                <div class="card-body" style = "padding-top:10px;">
+                    <p style = "color: grey; font-size:small; padding-left:16px; margin:5px; display: block; float: right;">{{review.date}}</p>
 
+                    <p class="card-text">{{(review.review)}}</p>
+                </div>
+            </div>
+            <br>
+        {% endfor %}
+    {% else %}
+    <div class="container">
+        <h5>No Reviews Found</h5>
+    </div>
+    {% endif %}
+    
 </div>
 
 {% endblock %}
