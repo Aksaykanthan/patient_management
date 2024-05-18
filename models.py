@@ -135,7 +135,8 @@ class Doctor(User):
         if db.doctors.find_one({'_id': doctor['_id']}):
             return jsonify({"des":"Doctor Already exists","type":"danger"}),400
         if db.doctors.insert_one(doctor):
-            db.hospitals.update_one({"_id": doctor["hospital"]},{"$push": {"doctors": doctor['_id']}},)
+            if not db.hospitals.find_one({"_id": doctor["hospital"]}):
+                db.hospitals.update_one({"_id": doctor["hospital"]},{"$push": {"doctors": doctor['_id']}},)
             return jsonify({"des": "Doctor Has Been Registered Successfully","type":"success","id":doctor['_id']}),200
         
         return jsonify({"des":"Registration failed","type":"danger"}),400
@@ -145,8 +146,8 @@ class Doctor(User):
         return db.doctors.find_one({"_id":_id}).get("name")
     
     @staticmethod
-    def view_doctors():
-        return list(db.doctors.find({}))
+    def view_doctors(spec = {}):
+        return list(db.doctors.find(spec))
 
     @staticmethod
     def get_doctor(_id):
@@ -209,6 +210,7 @@ class Session:
         self.doctor_id = doctor_id
         self.hospital_id = db.doctors.find_one({"_id": doctor_id}).get("hospital")
         session = {
+            "_id" : uuid.uuid4().hex,
             "doctor":self.doctor_id,
             "hospital":self.hospital_id,
             "subject":self.subject,
@@ -243,13 +245,13 @@ class Prescription:
 
 
 class Specialization:
-    def __init__(self,specialization:str):
-        self.specialization = specialization
+    def __init__(self,name:str):
+        self.specialization = name
     
     def create_specialization(self):
         specialization = {
             "_id" : uuid.uuid4().hex,
-            "specialization": self.specialization,
+            "name": self.specialization,
         }
         
         if db.specializations.find_one({'name': specialization['name']}):

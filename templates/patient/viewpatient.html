@@ -19,6 +19,8 @@
     <br>
     <br>
 
+
+
     {% if patients %}
         <table class="table">
             <thead>
@@ -26,7 +28,7 @@
                     <th>Patient Name</th>
                     <th>Patient DOB</th>
                     <th>View</th>
-                    <th>Edit</th>
+                    <th>Add Session</th>
                 </tr>
             </thead>
             <tbody>
@@ -34,8 +36,8 @@
                     <tr>
                         <td>{{ patient.name }}</td>
                         <td>{{ patient.dob }}</td>
-                        <td><a href="{{url_for('detailpatient', _id = patient._id )}}">view</a></td> 
-                        <td><a href="">edit</a></td> 
+                        <td><a  href="{{url_for('detailpatient', _id = patient._id )}}">view</a></td> 
+                        <td><a  href="{{ url_for('addsession' , _id = patient._id  ) }}"> Add </a></td> 
                     </tr>
                 {% endfor %}
             </tbody>

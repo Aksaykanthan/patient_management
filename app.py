@@ -86,7 +86,7 @@ def detailhospital():
 
 @app.route("/doctor")
 def doctor():
-    return render_template("doctor/viewdoctor.html", doctors = Doctor.view_doctors())
+    return render_template("doctor/viewdoctor.html", doctors = Doctor.view_doctors(),specializations = Specialization.view_specializations())
 
 @app.route("/doctor/add",methods = ["GET","POST"])
 def adddoctor():
@@ -120,6 +120,16 @@ def addreview():
 
     return render_template("doctor/review.html")
 
+
+@app.route("/doctor/filter",methods = ["GET","POST"])
+def filterdoctor():
+    if request.method == "GET":
+        specialization = request.args.get("specialization")
+
+        return render_template("doctor/viewdoctor.html", doctors = Doctor.view_doctors({"specialization":specialization}),specializations = Specialization.view_specializations(),specialization = specialization)
+
+    
+    return redirect(url_for("doctor"))
 
 # ---------- MEDICINE ROUTES ------------
 
@@ -165,7 +175,7 @@ def specialization():
 @app.route("/specialization/add",methods = ["GET","POST"])
 def addspecialization():
     if request.method == "POST":
-        res,err = Specialization(request.form.get("specialization")).create_specialization()
+        res,err = Specialization(request.form.get("name")).create_specialization()
         return redirect(url_for("specialization",msg = res.json.get("des"),_type=err))
     
     return render_template("specialization/addspecialization.html")
