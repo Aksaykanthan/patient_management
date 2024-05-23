@@ -1,3 +1,4 @@
+
 from flask import jsonify, session
 import uuid
 from app import db
@@ -21,6 +22,7 @@ class Patient(User):
         self.address = address
         self.bloodgroup = bloodgroup
         self.session = []
+        self.report = []
     
     def create_patient(self):
         patient = {
@@ -50,6 +52,10 @@ class Patient(User):
     @staticmethod
     def get_patient(_id):
         return db.patients.find_one({"_id":_id})
+    
+    @staticmethod
+    def get_patientname(_id):
+        return db.patients.find_one({"_id":_id}).get("name")
     
     @staticmethod
     def verify_patient(email,name):
@@ -87,9 +93,7 @@ class Hospital:
 
     @staticmethod
     def add_doctor(doctor_id,hospital_id):
-        hospital = db.hospitals.find_one({"_id":hospital_id})
-        hospital['doctors'].append(doctor_id)
-        db.hospitals.update_one({"_id":hospital_id},{"$set":hospital})
+        db.hospitals.update_one({"_id": hospital_id},{"$push": {"doctors": doctor_id}},)
         return jsonify({"des":"Doctor Added Successfully","type":"success"}),200
     
     @staticmethod
@@ -115,6 +119,7 @@ class Doctor(User):
         self.reviews = []
         self.ratings = 0
         self.hospital = hospital
+        self.session = []
     
     def create_doctor(self,_id):
         doctor = {
@@ -193,10 +198,13 @@ class Medicine:
     def get_medicine(_id):
         return db.medicines.find_one({"_id":_id})
     
+    @staticmethod
+    def get_medicinename(_id):
+        return Medicine.get_medicine(_id).get("name")
 
 
 class Session:
-    def __init__(self,subject:str,details:str,followup:str,prescription:list=[],report:list=[]):
+    def __init__(self,subject:str,details:str,followup:str,prescription:list=[]):
         self.subject = subject
         self.details = details
         self.prescription = prescription
@@ -204,7 +212,6 @@ class Session:
         self.current = datetime.datetime.now()
         self.time = self.current.strftime("%X")
         self.date = self.current.strftime("%x")
-        self.report = report
 
     def create_session(self,patient_id,doctor_id):
         self.doctor_id = doctor_id
@@ -219,19 +226,46 @@ class Session:
             "followup":self.followup,
             "time":self.time,
             "date":self.date,
-            "prescription":self.prescription
             }
         db.patients.update_one({"_id": patient_id},{"$push": {"session": session}},)
+        session["patient_id"] = patient_id
+        db.doctors.update_one({"_id": self.doctor_id},{"$push": {"session": session}},)
         return jsonify({"des":"Session Created Successfully","type":"success"}),200
+    
+    @staticmethod
+    def create_medicines(count,extra):
+        prescription = []
+        for i in range(int(count)):
+            # Construct key strings dynamically using i
+            medicine_key = "medicine" + str(i)
+            morning_key = "morning" + str(i)
+            afternoon_key = "afternoon" + str(i)
+            night_key = "night" + str(i)
+
+            # Use get method to retrieve values with default False
+            medicine = extra.get(medicine_key, None)  # None as default
+            morning = True if extra.get(morning_key, False) else False
+            afternoon = True if extra.get(afternoon_key, False) else False
+            night = True if extra.get(night_key, False) else False
+
+            med = Prescription(medicine,morning,afternoon,night).create_prescription()
+            prescription.append(med)
+        return prescription
+
+
+    
+    @staticmethod
+    def get_session(patient_id,session_id):
+        session = db.patients.find_one({"_id": patient_id, "session": { "$elemMatch": {"_id": session_id}}}, projection={"session": {"$elemMatch": {"_id": session_id}}})
+        return session["session"][0]
 
 
 class Prescription:
-    def __init__(self,medicine:str,morning:bool,evening:bool,night:bool,duration:str="Next Visit"):
+    def __init__(self,medicine:str,morning:bool,evening:bool,night:bool):
         self.medicine = medicine
         self.morning = morning
         self.evening = evening
         self.night = night
-        self.duration = duration
 
     def create_prescription(self):
         prescription = {
@@ -239,7 +273,6 @@ class Prescription:
             "morning":self.morning,
             "evening":self.evening,
             "night":self.night,
-            "duration":self.duration
         }
         return prescription
 
@@ -269,3 +302,78 @@ class Specialization:
     @staticmethod
     def get_specialization(_id):
         return db.specializations.find_one({"_id":_id})
+    
+class Report:
+    def __init__(self,reporttype:str,details:str,):
+        self.type = reporttype
+        self.details = details
+        self.current = datetime.datetime.now()
+        self.time = self.current.strftime("%X")
+        self.date = self.current.strftime("%x")
+
+    def create_report(self,doctor_id):
+        self.doctor_id = doctor_id
+        self.hospital_id = db.doctors.find_one({"_id": doctor_id}).get("hospital")
+        report = {
+            "_id" : uuid.uuid4().hex,
+            "type":self.type,
+            "time":self.time,
+            "date":self.date,
+            "doctor":self.doctor_id,
+            "hospital":self.hospital_id,
+            "details":self.details,
+            }
+        return report
+    
+    @staticmethod
+    def get_report(patient_id,report_id):
+        report = db.patients.find_one({"_id": patient_id, "reports": { "$elemMatch": {"_id": report_id}}}, projection={"reports": {"$elemMatch": {"_id": report_id}}})
+        return report["reports"][0]
+
+
+class BloodTest(Report):
+    def __init__(self,doctor_id:str,reporttype:str,patient_id:str,details:str,bloodgroup:str,rbc:str,wbc:str,pc:str,hemoglobin:str,glucose:str,colestrol:str):
+        super().__init__(reporttype,details)        
+        self.report = super().create_report(doctor_id)
+        self.bloodgroup = bloodgroup
+        self.rbc = rbc
+        self.wbc = wbc
+        self.pc = pc
+        self.hemoglobin = hemoglobin
+        self.glucose = glucose
+        self.colestrol = colestrol
+        self.patient_id = patient_id
+    
+    def create_report(self):
+        self.report["bloodgroup"] = self.bloodgroup
+        self.report["rbc"] = self.rbc
+        self.report["wbc"] = self.wbc
+        self.report["pc"] = self.pc
+        self.report["hemoglobin"] = self.hemoglobin
+        self.report["glucose"] = self.glucose
+        self.report["colesterol"] = self.colestrol
+
+        db.patients.update_one({"_id": self.patient_id},{"$push": {"reports": self.report}},)
+        return jsonify({"des":"Session Created Successfully","type":"success"}),200
+    
+class GeneralTest(Report):
+    def __init__(self,doctor_id:str,reporttype:str,patient_id:str,details:str,temperature:str,heartrate:str,bloodpressure:str,weight:str,height:str):
+        super().__init__(reporttype,details)
+        self.report = super().create_report(doctor_id)
+        self.temperature = temperature
+        self.heartrate = heartrate
+        self.bloodpressure = bloodpressure
+        self.weight = weight
+        self.height = height
+        self.patient_id = patient_id
+    
+    def create_report(self):
+        self.report["temperature"] = self.temperature
+        self.report["heartrate"] = self.heartrate
+        self.report["bloodpressure"] = self.bloodpressure
+        self.report["weight"] = self.weight
+        self.report["height"] = self.height
+
+        db.patients.update_one({"_id": self.patient_id},{"$push": {"reports": self.report}},)
+        return jsonify({"des":"Session Created Successfully","type":"success"}),200
+    

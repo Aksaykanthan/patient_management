@@ -15,7 +15,105 @@
     <div class="mb-3">
         <label for="details" class="form-label">Details</label>
         <textarea type="text" class="form-control" id="details" name="details" required></textarea>
+        <input type="hidden" class="form-control" id="count" name="count" value="1">
     </div>
+    <hr style="margin-bottom: 1.4em;">
+    <h4>Add Medicines</h4>
+    <div class="container" id = "medicines">
+
+        <div class="input-group btn-block" id = 'medicineOption'>
+                <select class="form-control" id="medicine0" name = "medicine0">
+                    {% for medicine in meds %}
+                        <option value="{{medicine._id}}">{{ medicine.name }}</option>
+                    {% endfor %}
+                </select>
+                <input type="checkbox" class="input-group-text" name = "morning0" style="width: 50px;">
+                <input type="checkbox" class="input-group-text" name = "afternoon0" style="width: 50px;">
+                <input type="checkbox" class="input-group-text" name = "night0" style="width: 50px;">
+    
+                <button type="button" class="btn btn-danger" style="width: 50px;" onclick="addMedicine()">+</button>
+        </div>
+    
+    </div>
+    
+    <script>
+        let n = 1;
+        let selectElement = document.getElementById('medicine0');
+        let arr = Array.from(selectElement.options).map(o => {return {name:o.innerText,_id:o.value}});
+        function addMedicine(){
+            const div = document.createElement('div');
+            div.classList.add('input-group', 'btn-block');
+            div.id = 'medicineOption';
+            div.style.marginTop = '10px';
+    
+            const select = document.createElement('select');
+            select.classList.add('form-control');
+            select.name = `medicine${n}`;
+    
+            arr.forEach((element, index) => {
+                const option = document.createElement('option');
+                option.name = `medicine${n}`
+                option.value = element._id;
+                option.textContent = element.name;
+                select.appendChild(option);
+            });
+    
+            const checkbox1 = document.createElement('input');
+            checkbox1.name = `morning${n}`
+            checkbox1.type = 'checkbox';
+            checkbox1.value = 'off';
+            checkbox1.classList.add('input-group-text');
+            checkbox1.style.width = '50px';
+
+            checkbox1.addEventListener('click', function() {
+                this.value = this.checked ? 'on' : 'off';
+            });
+    
+            const checkbox2 = document.createElement('input');
+            checkbox2.name = `afternoon${n}`
+            checkbox2.type = 'checkbox';
+            checkbox2.value = 'off';
+            checkbox2.classList.add('input-group-text');
+            checkbox2.style.width = '50px';
+
+            checkbox2.addEventListener('click', function() {
+                this.value = this.checked ? 'on' : 'off';
+            });
+    
+            const checkbox3 = document.createElement('input');
+            checkbox3.name = `night${n}`
+            checkbox3.type = 'checkbox';
+            checkbox3.value = 'off';
+            checkbox3.classList.add('input-group-text');
+            checkbox3.style.width = '50px';
+            checkbox3.style.marginRight = "50px";
+            
+            checkbox3.addEventListener('click', function() {
+                this.value = this.checked ? 'on' : 'off';
+            });
+    
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.classList.add('btn', 'btn-danger');
+            button.style.width = '50px';
+            button.textContent = '+';
+            button.onclick = addMedicine;
+            button.style.display = '';
+    
+            div.appendChild(select);
+            div.appendChild(checkbox1);
+            div.appendChild(checkbox2);
+            div.appendChild(checkbox3);
+            //div.appendChild(button);
+    
+            const cont = document.getElementById('medicines');
+            cont.appendChild(div);
+            n++;
+            const countInput = document.getElementById('count');
+            count.value = n;
+        }
+        </script>
+    <br>
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 

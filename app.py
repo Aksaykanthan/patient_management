@@ -9,12 +9,12 @@ app.secret_key = "medilink"
 client = pymongo.MongoClient("localhost",27017,uuidRepresentation='standard')
 db = client.Medilink
 
-from models import Doctor, Patient, Hospital, Medicine, Session, Specialization
+from models import Doctor, Patient, Hospital, Medicine, Session, Specialization,Report,GeneralTest,BloodTest
 from user import routes
 
 @app.route("/")
 def home():
-    return render_template("home.html")
+    return render_template("home.html", hospitals = Hospital.view_hospitals(),doctors = Doctor.view_doctors(),specializations = Specialization.view_specializations())
 
 # --------- PATIENT ROUTES ------------
 
@@ -95,7 +95,9 @@ def adddoctor():
         name = session.get("user").get("name")
         email = session.get("user").get("email")
         res,err = Doctor(name=name,email=email,**request.form).create_doctor(_id)
+        hospital_id = request.form.get("hospital")
         if err == 200:
+            Hospital.add_doctor(_id,hospital_id)
             return redirect(url_for("detaildoctor",_id = res.json.get("id"),msg = res.json.get("des"),_type=err,hospitals = Hospital.view_hospitals()))
         
         return redirect(url_for("adddoctor",msg = res.json.get("des"),_type=err,hospitals = Hospital.view_hospitals()))
@@ -160,11 +162,24 @@ def addsession():
     if request.method == "POST":
         patient_id = request.args.get("_id")
         doctor_id = session.get("user").get("_id")
-        res,err = Session(**request.form).create_session(patient_id,doctor_id)
+        count = request.form.get("count")
+        subject = request.form.get("subject")
+        followup = request.form.get("followup")
+        details = request.form.get("details")
+        prescription = Session.create_medicines(count,request.form)
+        print(request.form)
+        res,err = Session(subject,details,followup,prescription).create_session(patient_id,doctor_id)
         if err == 200:
             return redirect(url_for("detailpatient",_id = patient_id,msg = res.json.get("des"),_type=err))
 
-    return render_template("session/addsession.html")
+    return render_template("session/addsession.html",meds = Medicine.view_medicines())
+
+@app.route("/detailsession",methods = ["GET","POST"])
+def detailsession():
+    session_id = request.args.get("session_id")
+    patient_id = request.args.get("patient_id")
+    session = Session.get_session(patient_id,session_id)
+    return render_template("session/detailsession.html",session=session)
 
 # --------- SPECIALIZATION ROUTES ------------
 @app.route("/specialization")
@@ -180,7 +195,41 @@ def addspecialization():
     
     return render_template("specialization/addspecialization.html")
 
+# --------- TEST REPORT ROUTES ------------
+@app.route("/addbloodreport",methods = ["GET","POST"])
+def addbloodreport():
+    if request.method == "POST":
+        patient_id = request.args.get("_id")
+        doctor_id = session.get("user").get("_id")
+        res,err = BloodTest(doctor_id=doctor_id,reporttype="Blood Test",patient_id=patient_id,**request.form).create_report()
+        if err == 200:
+            return redirect(url_for("detailpatient",_id = patient_id,msg = res.json.get("des"),_type=err))
 
+    return render_template("reports/bloodreport.html")
+
+@app.route("/addgeneralreport",methods = ["GET","POST"])
+def addgeneralreport():
+    if request.method == "POST":
+        patient_id = request.args.get("_id")
+        doctor_id = session.get("user").get("_id")
+        res,err = GeneralTest(doctor_id=doctor_id,reporttype="General Test",patient_id=patient_id,**request.form).create_report()
+        if err == 200:
+            return redirect(url_for("detailpatient",_id = patient_id,msg = res.json.get("des"),_type=err))
+
+    return render_template("reports/generalreport.html")
+
+@app.route("/detailreport",methods = ["GET","POST"])
+def detailreport():
+    report_id = request.args.get("report_id")
+    patient_id = request.args.get("patient_id")
+    report = Report.get_report(patient_id,report_id)
+
+    if report.get("type") == "Blood Test":
+        return render_template("reports/detailbloodreport.html",report=report)
+    elif report.get("type") == "General Test":
+        return render_template("reports/detailgeneralreport.html",report=report)
+    else:
+        return redirect(url_for("detailpatient",_id=patient_id))
 
 # ------------- JINJA FILTERS ------------
 @app.context_processor
@@ -195,5 +244,9 @@ def utility_processor():
         return Doctor.get_doctor(_id)
     def get_allspecialization():
         return Specialization.view_specializations()
+    def get_patientname(_id):
+        return Patient.get_patientname(_id)
+    def get_medicinename(_id):
+        return Medicine.get_medicinename(_id)
     
-    return dict(get_doctorname=get_doctorname,get_hospitalname=get_hospitalname,get_hospital=get_hospital,get_doctor=get_doctor,get_allspecialization=get_allspecialization)
+    return dict(get_patientname=get_patientname,get_doctorname=get_doctorname,get_hospitalname=get_hospitalname,get_hospital=get_hospital,get_doctor=get_doctor,get_allspecialization=get_allspecialization,get_medicinename=get_medicinename)

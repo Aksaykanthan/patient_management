@@ -3,7 +3,34 @@
 {% block content %}
 
 <h1>DashBoard</h1>
+<h3 style="color: rgb(84, 83, 83);">Welcome Dr.{{doctor.name}}</h3>
+<br>
+<div class="container" style="border: 20px;border-radius : 20px;m">
+    <div class="container row">
+        <div class="col">
+            <h3>Past Sessions :</h3>
+        </div>
+    </div>
+    {% for record in doctor.session %}
+        <div class="card" id = "{{record._id}}">
+            <h5 class="card-header ">{{get_patientname(record.patient_id)}} - {{record.subject}}</h5>
+            <div class="card-body" style = "padding-top:10px;">
+                <p style = "color: grey; font-size:small; padding-left:16px; margin:5px; display: block; float: right;">{{record.date}} - {{record.time}}</p>
+                <h6 class="card-title"><a href = "{{url_for('detaildoctor' ,_id = record.doctor)}}" style = "text-decoration: none;">{{get_doctorname(record.doctor)}} </a> - <a style = "text-decoration: none;" href = "{{url_for('detailhospital', _id = record.hospital)}}">{{get_hospitalname(record.hospital)}}</a></h6>
+                <hr>
+                <p class="card-text">{{record.details}}</p>
+            </div>
+        </div>
+        <br>
+        <script>
+            const card{{record._id}} = document.getElementById("{{record._id}}")
+            card{{record._id}}.addEventListener("click", function(e){
+                window.location.href = "{{url_for('detailsession',patient_id = record.patient_id,session_id = record._id)|safe}}"
+            })
+        </script>
+    {% endfor %}  
+</div>
 
-{{session.user}}
 
 {% endblock %}
+

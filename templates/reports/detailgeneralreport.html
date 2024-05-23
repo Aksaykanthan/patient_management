@@ -1,0 +1,52 @@
+{% extends 'base.html' %} 
+
+{% block title %} General Report {% endblock%}
+
+{% block content %}
+
+<div class="container row">
+    <div class="col">
+        <h2>Details</h2>
+        <p style = "color: grey; font-size:small;">{{report.date}} - {{report.time}}</p>
+    </div>
+</div>
+
+<table class="table">
+    <tbody>
+        <tr>
+            <th scope="row">Docter</th>
+            <td>{{get_doctorname(report.doctor)}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Hospital</th>
+            <td>{{get_hospitalname(report.hospital)}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Temperature</th>
+            <td>{{report.temperature}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Weight</th>
+            <td>{{report.weight}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Height</th>
+            <td>{{report.height}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Heart Rate</th>
+            <td>{{report.heartrate}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Blood Pressure</th>
+            <td>{{report.bloodpressure}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Inference</th>
+            <td>{{report.details}}</td>
+        </tr>
+    </tbody>
+</table>
+<br><br>
+
+{% endblock %}

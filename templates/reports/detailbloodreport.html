@@ -1,0 +1,60 @@
+{% extends 'base.html' %} 
+
+{% block title %} Blood Report {% endblock%}
+
+{% block content %}
+
+<div class="container row">
+    <div class="col">
+        <h2>Details</h2>
+        <p style = "color: grey; font-size:small;">{{report.date}} - {{report.time}}</p>
+    </div>
+</div>
+
+<table class="table">
+    <tbody>
+        <tr>
+            <th scope="row">Docter</th>
+            <td>{{get_doctorname(report.doctor)}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Hospital</th>
+            <td>{{get_hospitalname(report.hospital)}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Blood Group</th>
+            <td>{{report.bloodgroup}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Red Blood Cell Count</th>
+            <td>{{report.rbc}}</td>
+        </tr>
+        <tr>
+            <th scope="row">White Blood Cell Count</th>
+            <td>{{report.wbc}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Platelet Count</th>
+            <td>{{report.pc}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Hemoglobin</th>
+            <td>{{report.hemoglobin}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Colesterol</th>
+            <td>{{report.colesterol}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Glucose Level</th>
+            <td>{{report.glucose}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Inference</th>
+            <td>{{report.details}}</td>
+        </tr>
+    </tbody>
+</table>
+<br><br>
+
+{% endblock %}

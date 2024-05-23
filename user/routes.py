@@ -3,6 +3,7 @@ from flask import Flask,render_template,request,redirect,url_for,session
 from app import app,db
 from user.models import User
 
+from models import Doctor
 
 def login_required(f):
     @wraps(f)
@@ -58,4 +59,7 @@ def signout():
 @app.route("/dashboard")
 @login_required
 def dashboard():
-    return render_template("dashboard.html")
+    _id = session.get("user").get("_id")
+    doctor = Doctor.get_doctor(_id)
+    print(doctor)
+    return render_template("dashboard.html",doctor=doctor)

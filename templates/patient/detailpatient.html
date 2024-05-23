@@ -50,6 +50,61 @@
     </tbody>
 </table>
 <br><br>
+
+<!-- TO BE ADDED --><!-- TO BE ADDED --><!-- TO BE ADDED --><!-- TO BE ADDED -->
+<!-- TO BE ADDED --><!-- TO BE ADDED --><!-- TO BE ADDED --><!-- TO BE ADDED -->
+<!-- TO BE ADDED --><!-- TO BE ADDED --><!-- TO BE ADDED --><!-- TO BE ADDED -->
+<!-- TO BE ADDED --><!-- TO BE ADDED --><!-- TO BE ADDED --><!-- TO BE ADDED -->
+<!-- TO BE ADDED --><!-- TO BE ADDED --><!-- TO BE ADDED --><!-- TO BE ADDED -->
+
+<div class="container" style="border: 20px;border-radius : 20px;m">
+    <div class="container row">
+        <div class="col">
+            <h2>Reports</h2>
+        </div>
+        <div class="col">
+        {% if session.logged_in %}
+            <!-- <a class="btn btn-primary" href="{{ url_for('addgeneralreport' , _id = patient._id  ) }}"
+                style="display: block; float: right;">Add Reports</a> -->
+            <div class="btn-group dropstart" style="float: right;">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    Add Report
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{ url_for('addbloodreport' , _id = patient._id  ) }}">Blood Report</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('addgeneralreport' , _id = patient._id  ) }}">General Report</a></li>
+                </ul>
+                </div>
+        {% endif %}
+        </div>
+    </div>
+    <br>
+    {% if patient.reports %}
+    {% for report in patient.reports %}
+        <div class="card" id = "{{report._id}}" >
+            <h5 class="card-header ">{{report.type}}</h5>
+            <div class="card-body" style = "padding-top:10px;">
+                <p style = "color: grey; font-size:small; padding-left:16px; margin:5px; display: block; float: right;">{{report.date}} - {{report.time}}</p>
+                <h6 class="card-title"><a href = "{{url_for('detaildoctor' ,_id = report.doctor)}}" style = "text-decoration: none;">{{get_doctorname(report.doctor)}} </a> - <a style = "text-decoration: none;" href = "{{url_for('detailhospital', _id = report.hospital)}}">{{get_hospitalname(report.hospital)}}</a></h6>
+                <hr>
+                <p class="card-text">{{report.details}}</p>
+            </div>
+        </div>
+        <script>
+            const card{{report._id}} = document.getElementById("{{report._id}}")
+            card{{report._id}}.addEventListener("click", function(e){
+                window.location.href = "{{url_for('detailreport',patient_id = patient._id,report_id = report._id)|safe}}"
+
+            })
+        </script>
+        <br>
+    {% endfor %} 
+    {% else %}
+    <center><h5>No reports found</h5></center>
+    {% endif %} 
+</div>
+
+<br>
 <div class="container" style="border: 20px;border-radius : 20px;m">
     <div class="container row">
         <div class="col">
@@ -58,13 +113,14 @@
         <div class="col">
         {% if session.logged_in %}
             <a class="btn btn-primary" href="{{ url_for('addsession' , _id = patient._id  ) }}"
-                style="display: block; float: right;">Add Records</a>
+                        style="display: block; float: right;">Add Records</a>
         {% endif %}
         </div>
     </div>
     <br>
+    {% if patient.session %}
     {% for record in patient.session %}
-        <div class="card">
+        <div class="card" id = "{{record._id}}">
             <h5 class="card-header ">{{record.subject}}</h5>
             <div class="card-body" style = "padding-top:10px;">
                 <p style = "color: grey; font-size:small; padding-left:16px; margin:5px; display: block; float: right;">{{record.date}} - {{record.time}}</p>
@@ -73,9 +129,18 @@
                 <p class="card-text">{{record.details}}</p>
             </div>
         </div>
-        <br>
-    {% endfor %}
+        <script>
+            const card{{record._id}} = document.getElementById("{{record._id}}")
+            card{{record._id}}.addEventListener("click", function(e){
+                window.location.href = "{{url_for('detailsession',patient_id = patient._id,session_id = record._id)|safe}}"
 
+            })
+        </script>
+        <br>
+    {% endfor %}  
+    {% else %}
+    <center><h5>No records found</h5></center>
+    {% endif %}
 </div>
 
 {% endblock %}
