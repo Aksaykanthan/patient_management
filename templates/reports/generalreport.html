@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %} Add General Report {% endblock %}
+{% block content %}
+
+<h1>General Report</h1>
+
+<form action="" method="POST">
+    <div class="mb-3">
+        <label for="temperature" class="form-label">Temperature</label>
+        <input type="text" class="form-control" id="temperature" name="temperature" required>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="mb-3">
+                <label for="weight" class="form-label">Weight</label>
+                <input type="text" class="form-control" id="weight" name="weight" required>
+            </div>
+        </div>
+        <div class="col">
+            <div class="mb-3">
+                <label for="height" class="form-label">Height</label>
+                <input type="text" class="form-control" id="height" name="height" required>
+            </div>
+        </div>
+    </div>
+    <div class="mb-3">
+        <label for="heartrate" class="form-label">Heart Rate</label>
+        <input type="text" class="form-control" id="heartrate" name="heartrate" required>
+    </div>
+    <div class="mb-3">
+        <label for="bloodpressure" class="form-label">Blood Pressure</label>
+        <input type="text" class="form-control" id="bloodpressure" name="bloodpressure" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="details" class="form-label">Details</label>
+        <textarea type="text" class="form-control" id="details" name="details" required></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock %}

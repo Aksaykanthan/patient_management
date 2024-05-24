@@ -38,6 +38,10 @@
             <td>{{doctor.phoneno}}</td>
         </tr>
         <tr>
+            <th scope="row">Hospital</th>
+            <td><a style = "text-decoration: none;" href = "{{url_for('detailhospital', _id = doctor.hospital)}}">{{get_hospitalname(doctor.hospital)}}</a></td>
+        </tr>
+        <tr>
             <th scope="row">Specialization</th>
             <td>{{doctor.specialization}}</td>
         </tr>
@@ -55,7 +59,9 @@
         </tr>
     </tbody>
 </table>
-<br><br>
+<br>
+<hr>
+<br>
 <div class="container" style="border: 20px;border-radius : 20px;m">
     <div class="container row">
         <div class="col">
