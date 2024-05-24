@@ -3,11 +3,16 @@ from flask import Flask,request,render_template,redirect, session,url_for
 import pymongo
 
 
+
 app = Flask(__name__)
 app.secret_key = "medilink"
 
 client = pymongo.MongoClient("localhost",27017,uuidRepresentation='standard')
 db = client.Medilink
+
+
+
+
 
 from models import Doctor, Patient, Hospital, Medicine, Session, Specialization
 from user import routes
