@@ -1,2 +1,6 @@
 __pycache__
 virt
+dataset
+*.ipynb
+Random Forest
+XGBoost

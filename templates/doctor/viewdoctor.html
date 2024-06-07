@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block title %} Doctors {% endblock %}
+
 {% block content %}
 
 
@@ -27,7 +28,7 @@
                     <span class="visually-hidden">Toggle Dropdown</span>
                 </button>
                 <ul class="dropdown-menu">
-                    <li> <a class = 'dropdown-item' href = "{{url_for('doctor')}}" type='submit'> Revome Filter</a></li>
+                    <li> <a class = 'dropdown-item' href = "{{url_for('doctor')}}" type='submit'> Remove Filter</a></li>
                     {% for specialization in specializations %}
                     <li> <a class = 'dropdown-item' href = "{{url_for('filterdoctor', specialization = specialization.name , _method='POST')}}" type='submit'> {{specialization.name}}</a></li>
                     {% endfor %}
