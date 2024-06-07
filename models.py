@@ -63,6 +63,10 @@ class Patient(User):
         if patient:
             return jsonify(patient),200
         return jsonify({"des":"Patient Not Found","type":"danger"}),400
+    
+    @staticmethod
+    def search_patients(txt):
+        return list(db.patients.find({"name": {"$regex": "^"+txt, "$options": "i"}}))
 
 
 class Hospital:
@@ -107,6 +111,11 @@ class Hospital:
     @staticmethod
     def get_hospital(_id):
         return db.hospitals.find_one({"_id":_id})
+    
+    @staticmethod
+    def search_hospitals(txt):
+        return list(db.hospitals.find({"name": {"$regex": "^"+txt, "$options": "i"}}))
+
 
 
 class Doctor(User):
@@ -165,6 +174,10 @@ class Doctor(User):
         doctor['reviews'].append(review)
         db.doctors.update_one({"_id":_id},{"$set":doctor})
         return jsonify({"des":"Review Added Successfully","type":"success"}),200
+    
+    @staticmethod
+    def search_doctors(txt):
+        return list(db.doctors.find({"name": {"$regex": "^"+txt, "$options": "i"}}))
 
 
 
@@ -201,6 +214,10 @@ class Medicine:
     @staticmethod
     def get_medicinename(_id):
         return Medicine.get_medicine(_id).get("name")
+    
+    @staticmethod
+    def search_medicines(txt):
+        return list(db.medicines.find({"name": {"$regex": "^"+txt, "$options": "i"}}))
 
 
 class Session:
@@ -302,6 +319,10 @@ class Specialization:
     @staticmethod
     def get_specialization(_id):
         return db.specializations.find_one({"_id":_id})
+    
+    @staticmethod
+    def search_specialization(txt):
+        return list(db.specializations.find({"name": {"$regex": "^"+txt, "$options": "i"}}))
     
 class Report:
     def __init__(self,reporttype:str,details:str,):

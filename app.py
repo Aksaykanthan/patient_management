@@ -54,6 +54,12 @@ def verifypatient():
     
     return render_template("patient/verifypatient.html")
 
+@app.route("/patient/search/<txt>",methods = ['GET','POST'])
+def searchpatient(txt):
+    if request.method == "GET":
+        return render_template("patient/viewpatient.html",patients = Patient.search_patients(txt))
+    
+    return redirect(url_for("patient"))
 
 # --------- HOSPITAL ROUTES ------------
 
@@ -81,6 +87,11 @@ def detailhospital():
     # doctors = [Doctor.get_doctor(doctor) for doctor in hospital["doctors"]]
     return render_template("hospital/detailhospital.html",hospital = hospital,doctors = doctors)
 
+@app.route("/hospital/search/<txt>",methods = ['GET','POST'])
+def search_hospital(txt):
+    if request.method == "GET":
+        return render_template("hospital/viewhospital.html",hospitals = Hospital.search_hospitals(txt))
+    return redirect(url_for("hospital"))
 
 # --------- DOCTOR ROUTES ------------
 
@@ -133,6 +144,12 @@ def filterdoctor():
     
     return redirect(url_for("doctor"))
 
+@app.route("/doctor/search/<txt>",methods = ['GET','POST'])
+def search_doctor(txt):
+    if request.method == "GET":
+        return render_template("doctor/viewdoctor.html",doctors = Doctor.search_doctors(txt))
+    return redirect("doctor")
+
 # ---------- MEDICINE ROUTES ------------
 
 @app.route("/medicine")
@@ -155,6 +172,12 @@ def detailmedicine():
     _id = request.args.get("_id")
     medicine = Medicine.get_medicine(_id)
     return render_template("medicine/detailmedicine.html",medicine=medicine)
+
+@app.route("/medicine/search/<txt>",methods = ['GET','POST'])
+def search_medicine(txt):
+    if request.method == "GET":
+        return render_template("medicine/viewmedicine.html",medicines = Medicine.search_medicines(txt))
+    return redirect(url_for("medicine"))
 
 # ---------- SESSION ROUTES ------------
 @app.route("/addsession",methods = ["GET","POST"])
@@ -194,6 +217,12 @@ def addspecialization():
         return redirect(url_for("specialization",msg = res.json.get("des"),_type=err))
     
     return render_template("specialization/addspecialization.html")
+
+@app.route("/specialization/search/<txt>", methods = ['GET','POST'])
+def search_specialization(txt):
+    if request.method == "GET":
+        return render_template("specialization/viewspecialization.html",specializations = Specialization.search_specializations(txt))
+    return redirect(url_for("specialization"))
 
 # --------- TEST REPORT ROUTES ------------
 @app.route("/addbloodreport",methods = ["GET","POST"])
